@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "430666084295",
+    "firebase_url": "https://fir-44f31.firebaseio.com",
+    "project_id": "fir-44f31",
+    "storage_bucket": "fir-44f31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430666084295:android:b47e98a36a8ec844f173e2",
+        "android_client_info": {
+          "package_name": "com.keshav.firebase_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "430666084295-ef72dcsvhiud7ddm9klot8pvpkqu12un.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8ZVSACEySZtfQO_8NXhasnRnzkEjo0dg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "430666084295-ef72dcsvhiud7ddm9klot8pvpkqu12un.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

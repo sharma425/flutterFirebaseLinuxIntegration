@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(myApp());
+}
+
+class myApp extends StatefulWidget {
+  @override
+  _myAppState createState() => _myAppState();
+}
+
+class _myAppState extends State<myApp> {
+  var fsConnect = FirebaseFirestore.instance;
+
+  var cmd;
+  var myCommand;
+  var myOutput;
+  var output;
+  var retrive;
+  var message;
+
+  retriveData(documentId) async {
+    print(documentId);
+    // ignore: cancel_subscriptions
+    await fsConnect
+        .collection("linuxCommand")
+        .document(documentId)
+        .get()
+        .then((value) {
+      setState(() {
+        var map = value.data();
+        var mapCommand = map['command'];
+        var mapOutput = map['output'];
+        myCommand = "Your Command Is : $mapCommand";
+        myOutput = "Your Output Is : $mapOutput";
+      });
+      print("this ${value.data()}");
+    });
+  }
+
+  uploadData(cmd, output) async {
+    String documentID;
+    fsConnect
+        .collection("linuxCommand")
+        .add({"command": cmd, "output": output}).then((value) {
+      setState(() {
+        message = "Document Uploaded Your Document Id is : ${value.id}";
+      });
+      documentID = value.id;
+      retriveData(documentID);
+      print("this is  $documentID");
+    });
+  }
+
+  myWeb(cmd) async {
+    try {
+      var url = "http://192.168.43.13/cgi-bin/web.py?x=${cmd}";
+      var response = await http.get(url);
+      output = response.body;
+      uploadData(cmd, output);
+    } catch (e) {
+      setState(() {
+        message = "Cannot connect to Linux";
+        myOutput = null;
+        myCommand = null;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Firebase"),
+        ),
+        body: Center(
+          child: Container(
+            color: Colors.red.shade200,
+            height: 400,
+            width: 300,
+            child: Column(
+              children: [
+                Card(
+                  elevation: 10,
+                  child: TextField(
+                    onChanged: (value) => cmd = value,
+                  ),
+                ),
+                RaisedButton(
+                  onPressed: () {
+                    myWeb(cmd);
+                  },
+                  child: Text("Press Here"),
+                ),
+                Card(
+                  elevation: 10,
+                  child: Container(
+                    height: 250,
+                    width: 270,
+                    child: Column(
+                      children: [
+                        Text(message ?? "Your Output Will Be Here"),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(myCommand ?? ""),
+                        Text(myOutput ?? ""),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
